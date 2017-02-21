@@ -10,6 +10,12 @@ module ::Proxy::DHCP::Infoblox
     end
 
     def try_restart
+      props = ::Infoblox::DHCPProperties.all(connection).first
+      if props.immediate_fa_configuration
+        logger.debug 'Immediate FA configuration is set, skipping grid restart.'
+        return
+      end
+
       logger.debug 'Restarting grid.'
 
       MAX_ATTEMPTS.times do |tries|
